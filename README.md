@@ -67,3 +67,7 @@ Both documentation views are produced by the built-in Kotlin plugin, which turns
 a `!` followed by a link. This plugin registers documentation providers ahead of the built-in ones.
 For KDoc that contains images, it asks the built-in provider for its HTML, replaces each such link
 with an `<img>` tag pointing at the resolved file, and returns the result.
+
+## License
+
+MIT, see [LICENSE](LICENSE).

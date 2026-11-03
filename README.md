@@ -66,7 +66,7 @@ checks a signed zip against `CERTIFICATE_CHAIN`.
 ## Release
 
 Pushing a tag that starts with `v` runs `.github/workflows/release.yml`, which runs the tests and
-coverage gate, builds the plugin, and publishes a GitHub release with the zip attached. The tag must
+coverage gate, builds and signs the plugin, and publishes a GitHub release with the signed zip attached. The tag must
 match the version in `build.gradle.kts`, for example `v0.1.0` for version `0.1.0`.
 
 ## Develop

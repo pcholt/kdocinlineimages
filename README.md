@@ -75,6 +75,7 @@ match the version in `build.gradle.kts`, for example `v0.1.0` for version `0.1.0
 ./gradlew test          # unit tests
 ./gradlew koverVerify   # coverage gate (80% minimum)
 ./gradlew runIde        # launches a sandbox Android Studio with the plugin loaded
+./gradlew verifyPlugin -PverifierIdeHome=<path to an IDE installation>   # JetBrains Plugin Verifier
 ```
 
 Coverage is measured on the platform-independent code in `com.pcholt.kdocinlineimages.core`. The classes
@@ -83,10 +84,13 @@ gate; pass `-PincludeIdeAdapters` to include them in the report.
 
 ## How it works
 
-Both documentation views are produced by the built-in Kotlin plugin, which turns `![alt](path)` into
-a `!` followed by a link. This plugin registers documentation providers ahead of the built-in ones.
-For KDoc that contains images, it asks the built-in provider for its HTML, replaces each such link
-with an `<img>` tag pointing at the resolved file, and returns the result.
+The plugin registers its own documentation providers ahead of the built-in ones. For a Kotlin declaration
+whose KDoc contains Markdown images, it renders the KDoc with the Kotlin plugin's renderer, replaces each
+`!` followed by a link with an `<img>` tag pointing at the resolved file, and returns the result for both
+the Quick Documentation popup and the rendered comment view. KDoc without images is left to the built-in
+providers. The plugin does not call the platform's internal or override-only APIs; the one remaining
+Plugin Verifier note is that `InlineDocumentation`, the interface behind the rendered comment view, is
+marked experimental.
 
 ## License
 

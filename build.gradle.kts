@@ -23,6 +23,7 @@ dependencies {
             androidStudio(providers.gradleProperty("androidStudioVersion"))
         }
         bundledPlugin("org.jetbrains.kotlin")
+        pluginVerifier()
     }
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
@@ -51,6 +52,11 @@ intellijPlatform {
         certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
         privateKey = providers.environmentVariable("PRIVATE_KEY")
         password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
+    pluginVerification {
+        ides {
+            local(providers.gradleProperty("verifierIdeHome"))
+        }
     }
     buildSearchableOptions = false
 }

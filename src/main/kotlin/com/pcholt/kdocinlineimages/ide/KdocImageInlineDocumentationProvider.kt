@@ -1,42 +1,46 @@
 package com.pcholt.kdocinlineimages.ide
 
-import com.pcholt.kdocinlineimages.core.KdocImageHtmlRewriter
 import com.intellij.openapi.util.TextRange
+import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.InlineDocumentation
 import com.intellij.platform.backend.documentation.InlineDocumentationProvider
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.kotlin.kdoc.psi.api.KDoc
+import org.jetbrains.kotlin.psi.KtDeclaration
 
 class KdocImageInlineDocumentationProvider(
-    private val htmlRewriter: KdocImageHtmlRewriter,
-    private val builtInProviders: () -> List<InlineDocumentationProvider>,
+    private val htmlRenderer: KdocImageHtmlRenderer,
 ) : InlineDocumentationProvider {
 
-    constructor() : this(createKdocImageHtmlRewriter(), ::otherInlineDocumentationProviders)
+    constructor() : this(KdocImageHtmlRenderer(createKdocImageHtmlRewriter()))
 
-    override fun inlineDocumentationItems(file: PsiFile?): Collection<InlineDocumentation> {
-        file ?: return emptyList()
-        return builtInProviders()
-            .flatMap { it.inlineDocumentationItems(file) }
-            .mapNotNull { withImagesOrNull(it, file) }
-    }
+    override fun inlineDocumentationItems(file: PsiFile?): Collection<InlineDocumentation> =
+        PsiTreeUtil.findChildrenOfType(file, KDoc::class.java).mapNotNull(::inlineDocumentationWithImagesOrNull)
 
     override fun findInlineDocumentation(file: PsiFile, textRange: TextRange): InlineDocumentation? =
-        builtInProviders()
-            .firstNotNullOfOrNull { it.findInlineDocumentation(file, textRange) }
-            ?.let { withImagesOrNull(it, file) }
+        PsiTreeUtil.findChildrenOfType(file, KDoc::class.java)
+            .firstOrNull { it.textRange == textRange }
+            ?.let(::inlineDocumentationWithImagesOrNull)
 
-    private fun withImagesOrNull(item: InlineDocumentation, file: PsiFile): InlineDocumentation? {
-        val kdocText = item.documentationRange.substring(file.text)
-        if (!htmlRewriter.containsImages(kdocText)) return null
-
-        val renderedHtml = htmlRewriter.rewrite(kdocText, item.renderText().orEmpty(), sourceDirectoryOf(file))
-        return InlineDocumentationWithImages(item, renderedHtml)
+    private fun inlineDocumentationWithImagesOrNull(kdoc: KDoc): InlineDocumentation? {
+        val declaration = kdoc.owner as? KtDeclaration ?: return null
+        if (!htmlRenderer.containsImages(kdoc)) return null
+        return KdocImageInlineDocumentation(kdoc, declaration, htmlRenderer)
     }
 }
 
-private class InlineDocumentationWithImages(
-    delegate: InlineDocumentation,
-    private val renderedHtml: String,
-) : InlineDocumentation by delegate {
-    override fun renderText(): String = renderedHtml
+private class KdocImageInlineDocumentation(
+    private val kdoc: KDoc,
+    private val declaration: KtDeclaration,
+    private val htmlRenderer: KdocImageHtmlRenderer,
+) : InlineDocumentation {
+
+    override fun getDocumentationRange(): TextRange = kdoc.textRange
+
+    override fun getDocumentationOwnerRange(): TextRange = declaration.textRange
+
+    override fun renderText(): String = htmlRenderer.renderBodyHtml(kdoc)
+
+    override fun getOwnerTarget(): DocumentationTarget = KdocImageDocumentationTarget(declaration, htmlRenderer)
 }

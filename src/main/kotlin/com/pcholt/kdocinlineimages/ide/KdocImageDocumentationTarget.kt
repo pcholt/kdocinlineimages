@@ -4,19 +4,30 @@ import com.intellij.model.Pointer
 import com.intellij.platform.backend.documentation.DocumentationContent
 import com.intellij.platform.backend.documentation.DocumentationResult
 import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.presentation.TargetPresentation
+import com.intellij.psi.SmartPointerManager
+import org.jetbrains.kotlin.psi.KtDeclaration
 
 class KdocImageDocumentationTarget(
-    private val builtInTarget: DocumentationTarget,
-    private val documentationHtml: String,
-) : DocumentationTarget by builtInTarget {
+    private val declaration: KtDeclaration,
+    private val htmlRenderer: KdocImageHtmlRenderer,
+) : DocumentationTarget {
 
     override fun createPointer(): Pointer<out DocumentationTarget> {
-        val builtInPointer = builtInTarget.createPointer()
+        val declarationPointer = SmartPointerManager.createPointer(declaration)
+        val renderer = htmlRenderer
         return Pointer {
-            builtInPointer.dereference()?.let { KdocImageDocumentationTarget(it, documentationHtml) }
+            declarationPointer.element?.let { KdocImageDocumentationTarget(it, renderer) }
         }
     }
 
-    override fun computeDocumentation(): DocumentationResult =
-        DocumentationResult.documentation(DocumentationContent.content(documentationHtml))
+    override fun computePresentation(): TargetPresentation =
+        TargetPresentation.builder(declaration.name ?: declaration.text.lineSequence().first()).presentation()
+
+    override fun computeDocumentation(): DocumentationResult? {
+        val kdoc = declaration.docComment ?: return null
+        return DocumentationResult.documentation(
+            DocumentationContent.content(htmlRenderer.renderPopupHtml(declaration, kdoc))
+        )
+    }
 }

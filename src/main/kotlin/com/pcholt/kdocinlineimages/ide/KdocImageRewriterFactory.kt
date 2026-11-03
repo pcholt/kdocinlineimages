@@ -11,7 +11,3 @@ fun createKdocImageHtmlRewriter(): KdocImageHtmlRewriter =
 
 fun sourceDirectoryOf(file: PsiFile): Path? =
     runCatching { file.originalFile.virtualFile?.parent?.toNioPath() }.getOrNull()
-
-fun otherInlineDocumentationProviders(): List<com.intellij.platform.backend.documentation.InlineDocumentationProvider> =
-    com.intellij.platform.backend.documentation.InlineDocumentationProvider.EP_NAME.extensionList
-        .filterNot { it is KdocImageInlineDocumentationProvider }

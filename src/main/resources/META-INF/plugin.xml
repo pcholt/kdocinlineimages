@@ -1,0 +1,23 @@
+<idea-plugin>
+    <id>com.pcholt.kdocinlineimages</id>
+    <name>KDoc Inline Images</name>
+    <vendor url="https://github.com/pcholt">pcholt</vendor>
+    <description><![CDATA[
+        Shows images written with Markdown syntax, <code>![alt](path/to/image.png)</code>, in the Kotlin
+        documentation popup and in the rendered comment view. Relative paths are resolved against the
+        folder of the Kotlin source file.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <platform.backend.documentation.psiTargetProvider
+                id="KdocImageTargetProvider"
+                implementation="com.pcholt.kdocinlineimages.ide.KdocImagePsiDocumentationTargetProvider"
+                order="first"/>
+        <platform.backend.documentation.inlineDocumentationProvider
+                implementation="com.pcholt.kdocinlineimages.ide.KdocImageInlineDocumentationProvider"
+                order="first"/>
+    </extensions>
+</idea-plugin>

@@ -1,0 +1,69 @@
+# KDoc Inline Images
+
+An Android Studio / IntelliJ IDEA plugin that shows images written in KDoc with Markdown syntax:
+
+```kotlin
+/**
+ * Shows the login screen.
+ *
+ * ![Login screen](../../../../docs/login.png)
+ */
+fun showLogin() = Unit
+```
+
+The image appears in both the Quick Documentation popup (Ctrl+Q) and the rendered comment view
+(Ctrl+Alt+Q, or the pencil icon in the gutter).
+
+## Behaviour
+
+- Syntax: `![alt text](path)`, optionally with a title, `![alt](path "title")`, or a path in angle
+  brackets that may contain spaces, `![alt](<my images/logo.png>)`.
+- Relative paths are resolved against the folder of the Kotlin source file. Absolute paths and
+  `file:` URLs also work.
+- An image that cannot be found stays as the plain link that Kotlin's own renderer produces.
+- `http` and `https` images are not supported and also stay as plain links.
+- The HTML `<img>` tag is not supported, because Kotlin's renderer drops it before the plugin sees it.
+- KDoc without images is untouched and rendered by the built-in Kotlin renderer.
+- In the popup, a KDoc that contains an image shows the declaration's first line as its definition,
+  not the full highlighted signature.
+
+## Compatibility
+
+Built and tested against Android Studio build `262.9437.185.2621.16467767` (IntelliJ platform 262).
+`since-build` is `262` with no upper limit; other versions are untested.
+
+## Install
+
+1. Download `KDocInlineImages-0.1.0.zip` (or build it, see below).
+2. In Android Studio open **Settings → Plugins**, click the gear icon and choose **Install Plugin from Disk...**.
+3. Select the zip file, accept the third-party plugin notice, and restart the IDE when asked.
+
+To uninstall, open **Settings → Plugins → Installed**, find *KDoc Inline Images*, and choose **Uninstall**.
+
+## Build the distribution
+
+```bash
+./gradlew buildPlugin
+```
+
+The installable zip is written to `build/distributions/`. Gradle needs `android.studio.home` in
+`gradle.properties` to point at your Android Studio installation; adjust it for your machine.
+
+## Develop
+
+```bash
+./gradlew test          # unit tests
+./gradlew koverVerify   # coverage gate (80% minimum)
+./gradlew runIde        # launches a sandbox Android Studio with the plugin loaded
+```
+
+Coverage is measured on the platform-independent code in `com.pcholt.kdocinlineimages.core`. The classes
+in `com.pcholt.kdocinlineimages.ide` are thin adapters to the IntelliJ Platform and are excluded from the
+gate; pass `-PincludeIdeAdapters` to include them in the report.
+
+## How it works
+
+Both documentation views are produced by the built-in Kotlin plugin, which turns `![alt](path)` into
+a `!` followed by a link. This plugin registers documentation providers ahead of the built-in ones.
+For KDoc that contains images, it asks the built-in provider for its HTML, replaces each such link
+with an `<img>` tag pointing at the resolved file, and returns the result.

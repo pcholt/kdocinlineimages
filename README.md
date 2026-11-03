@@ -1,6 +1,6 @@
 # KDoc Inline Images
 
-An Android Studio / IntelliJ IDEA plugin that shows images written in KDoc with Markdown syntax:
+An Android Studio and IntelliJ IDEA plugin that shows images written in KDoc with Markdown syntax:
 
 ```kotlin
 /**
@@ -29,8 +29,9 @@ The image appears in both the Quick Documentation popup (Ctrl+Q) and the rendere
 
 ## Compatibility
 
-Built and tested against Android Studio build `262.9437.185.2621.16467767` (IntelliJ platform 262).
-`since-build` is `262` with no upper limit; other versions are untested.
+Built against Android Studio build `262.9437.185.2621.16467767` (IntelliJ platform 262) and tested there.
+It has also been confirmed to work in IntelliJ IDEA. `since-build` is `262` with no upper limit; other
+versions are untested.
 
 ## Install
 

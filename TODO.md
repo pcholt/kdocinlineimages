@@ -13,4 +13,5 @@
 - [ ] Compare it with the Android Studio build: same plugin descriptor, same extension points, and the same compiled adapter classes apart from platform version metadata.
 - [ ] Run the IntelliJ IDEA Community build in a sandbox IDE and check images in the popup and the rendered view.
 - [ ] Run the plugin verifier against both IDE builds and compare the reports.
+- [ ] Record which IntelliJ IDEA version the plugin was confirmed to work in, and add it to the README compatibility section.
 - [ ] Decide which IDE CI compiles against, and update the README compatibility section.

@@ -4,3 +4,6 @@ build/
 .intellijPlatform/
 *.iml
 local.properties
+*.pem
+chain.crt
+password.txt

@@ -47,6 +47,11 @@ intellijPlatform {
             untilBuild = provider { null }
         }
     }
+    signing {
+        certificateChain = providers.environmentVariable("CERTIFICATE_CHAIN")
+        privateKey = providers.environmentVariable("PRIVATE_KEY")
+        password = providers.environmentVariable("PRIVATE_KEY_PASSWORD")
+    }
     buildSearchableOptions = false
 }
 

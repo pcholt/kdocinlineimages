@@ -51,6 +51,18 @@ The installable zip is written to `build/distributions/`. By default Gradle down
 Studio version named by `androidStudioVersion` in `gradle.properties`. To build against an installed
 Android Studio instead, pass its folder: `./gradlew buildPlugin -Pandroid.studio.home=/path/to/android-studio`.
 
+## Signing
+
+JetBrains Marketplace requires signed plugins. `./gradlew signPlugin` signs the zip when these
+environment variables are set, and writes `build/distributions/KDocInlineImages-<version>-signed.zip`:
+
+- `CERTIFICATE_CHAIN`: the certificate chain, in PEM format.
+- `PRIVATE_KEY`: the encrypted private key, in PEM format.
+- `PRIVATE_KEY_PASSWORD`: the private key's password.
+
+Keep the key, certificate and password out of the repository. `./gradlew verifyPluginSignature`
+checks a signed zip against `CERTIFICATE_CHAIN`.
+
 ## Release
 
 Pushing a tag that starts with `v` runs `.github/workflows/release.yml`, which runs the tests and

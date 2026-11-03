@@ -46,8 +46,15 @@ To uninstall, open **Settings → Plugins → Installed**, find *KDoc Inline Ima
 ./gradlew buildPlugin
 ```
 
-The installable zip is written to `build/distributions/`. Gradle needs `android.studio.home` in
-`gradle.properties` to point at your Android Studio installation; adjust it for your machine.
+The installable zip is written to `build/distributions/`. By default Gradle downloads the Android
+Studio version named by `androidStudioVersion` in `gradle.properties`. To build against an installed
+Android Studio instead, pass its folder: `./gradlew buildPlugin -Pandroid.studio.home=/path/to/android-studio`.
+
+## Release
+
+Pushing a tag that starts with `v` runs `.github/workflows/release.yml`, which runs the tests and
+coverage gate, builds the plugin, and publishes a GitHub release with the zip attached. The tag must
+match the version in `build.gradle.kts`, for example `v0.1.0` for version `0.1.0`.
 
 ## Develop
 

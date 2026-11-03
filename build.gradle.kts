@@ -16,7 +16,12 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        local(providers.gradleProperty("android.studio.home"))
+        val localAndroidStudioHome = providers.gradleProperty("android.studio.home")
+        if (localAndroidStudioHome.isPresent) {
+            local(localAndroidStudioHome)
+        } else {
+            androidStudio(providers.gradleProperty("androidStudioVersion"))
+        }
         bundledPlugin("org.jetbrains.kotlin")
     }
     testImplementation(kotlin("test-junit5"))

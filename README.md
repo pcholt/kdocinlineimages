@@ -86,9 +86,9 @@ gate; pass `-PincludeIdeAdapters` to include them in the report.
 
 The plugin registers its own documentation providers ahead of the built-in ones. For a Kotlin declaration
 whose KDoc contains Markdown images, it renders the KDoc with the Kotlin plugin's renderer, replaces each
-`!` followed by a link with an `<img>` tag pointing at the resolved file, and returns the result for both
-the Quick Documentation popup and the rendered comment view. KDoc without images is left to the built-in
-providers. The plugin does not call the platform's internal or override-only APIs; the one remaining
+`!` followed by a link with an `<img>` tag pointing at the resolved file, and returns the result for the
+Quick Documentation popup. The rendered comment view is produced the same way for every KDoc comment.
+In the popup, KDoc without images is left to the built-in provider. The plugin does not call the platform's internal or override-only APIs; the one remaining
 Plugin Verifier note is that `InlineDocumentation`, the interface behind the rendered comment view, is
 marked experimental.
 

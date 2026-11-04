@@ -16,16 +16,15 @@ class KdocImageInlineDocumentationProvider(
     constructor() : this(KdocImageHtmlRenderer(createKdocImageHtmlRewriter()))
 
     override fun inlineDocumentationItems(file: PsiFile?): Collection<InlineDocumentation> =
-        PsiTreeUtil.findChildrenOfType(file, KDoc::class.java).mapNotNull(::inlineDocumentationWithImagesOrNull)
+        PsiTreeUtil.findChildrenOfType(file, KDoc::class.java).mapNotNull(::inlineDocumentationOrNull)
 
     override fun findInlineDocumentation(file: PsiFile, textRange: TextRange): InlineDocumentation? =
         PsiTreeUtil.findChildrenOfType(file, KDoc::class.java)
             .firstOrNull { it.textRange == textRange }
-            ?.let(::inlineDocumentationWithImagesOrNull)
+            ?.let(::inlineDocumentationOrNull)
 
-    private fun inlineDocumentationWithImagesOrNull(kdoc: KDoc): InlineDocumentation? {
+    private fun inlineDocumentationOrNull(kdoc: KDoc): InlineDocumentation? {
         val declaration = kdoc.owner as? KtDeclaration ?: return null
-        if (!htmlRenderer.containsImages(kdoc)) return null
         return KdocImageInlineDocumentation(kdoc, declaration, htmlRenderer)
     }
 }

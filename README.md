@@ -35,7 +35,7 @@ versions are untested.
 
 ## Install
 
-1. Download `KDocInlineImages-0.1.0.zip` (or build it, see below).
+1. Download `KDocInlineImages-0.1.1-signed.zip` (or build it, see below).
 2. In Android Studio open **Settings → Plugins**, click the gear icon and choose **Install Plugin from Disk...**.
 3. Select the zip file, accept the third-party plugin notice, and restart the IDE when asked.
 
